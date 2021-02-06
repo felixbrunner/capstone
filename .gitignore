@@ -2,6 +2,9 @@
 data/
 data/train.csv
 
+# Deployment
+deploy/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

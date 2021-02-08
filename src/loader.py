@@ -10,11 +10,11 @@ def load_raw():
     df['Date'] = pd.to_datetime(df['Date'])
     
     # convert categoricals
-    categoricals = ['Type', 'Gender', 'Age range', 'Self-defined ethnicity', 'Officer-defined ethnicity', 'Legislation', 'Object of search', 'Outcome', 'station']
+    categoricals = ['Type', 'Gender', 'Age range', 'Self-defined ethnicity', 'Officer-defined ethnicity', 'Legislation', 'Object of search', 'Outcome', 'station', 'Part of a policing operation']
     df[categoricals] = df[categoricals].astype('category')
     
     # convert booleans
-    bools = ['Part of a policing operation', 'Outcome linked to object of search', 'Removal of more than just outer clothing']
+    bools = ['Outcome linked to object of search', 'Removal of more than just outer clothing']
     #df[bools] = df[bools].astype('boolean')
     
     # rename columns

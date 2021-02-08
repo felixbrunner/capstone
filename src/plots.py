@@ -209,3 +209,54 @@ def make_barplot_success(df, group_vars):
             ax.set_xticklabels([])
         
         fig.savefig('../reports/figures/success_rates.jpg', dpi=300, bbox_inches='tight')
+        
+        
+def make_evaluation_plot(df=None):
+    '''Creates a summarising plot of model perfomances.'''
+    # set up
+    if df is not None:
+        df_plain_models = df
+    else:
+        df_plain_models = pd.read_pickle('../data/df_plain_models.pickle')
+    fig, axes = plt.subplots(4, 1, figsize=(17,10))
+    
+    # precision
+    ax = axes[0]
+    ax.set_xticklabels([])
+    ax.set_title('Search precision')
+    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'precision')], marker='o', markersize=10, label='Training')
+    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'precision')], marker='o', markersize=10, label='Validation')
+    ax.axhline(df_plain_models.loc['Benchmark', ('all', 'precision')], c='k', linewidth=2, linestyle='--', label='Benchmark')
+    ax.set_ylim([0, 1])
+    
+    # within station
+    ax = axes[1]
+    ax.set_xticklabels([])
+    ax.set_title('Maximum discrimination within station between ethnicity-gender-subgroups')
+    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'within_station')], marker='o', markersize=10, label='Training')
+    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'within_station')], marker='o', markersize=10, label='Validation')
+    ax.axhline(df_plain_models.loc['Benchmark', ('all', 'within_station')], c='k', linewidth=2, linestyle='--', label='Benchmark')
+    ax.axhline(0.05, c='k', linewidth=2, linestyle=':', label='Target')
+    ax.set_ylim([0, None])
+    
+    # across station
+    ax = axes[2]
+    ax.set_xticklabels([])
+    ax.set_title('Maximum precision discrepancy between stations overall')
+    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'across_station')], marker='o', markersize=10, label='Training')
+    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'across_station')], marker='o', markersize=10, label='Validation')
+    ax.axhline(df_plain_models.loc['Benchmark', ('all', 'across_station')], c='k', linewidth=2, linestyle='--', label='Benchmark')
+    ax.axhline(0.1, c='k', linewidth=2, linestyle=':', label='Target')
+    ax.set_ylim([0, None])
+    
+    # across subgroups
+    ax = axes[3]
+    ax.set_title('Maximum discrimination between ethnicity-gender-subgroups')
+    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'across_group')], marker='o', markersize=10, label='Training')
+    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'across_group')], marker='o', markersize=10, label='Validation')
+    ax.axhline(df_plain_models.loc['Benchmark', ('all', 'across_group')], c='k', linewidth=2, linestyle='--', label='Benchmark')
+    ax.axhline(0.05, c='k', linewidth=2, linestyle=':', label='Target')
+    ax.set_ylim([0, None])
+    ax.legend(loc='upper right', bbox_to_anchor=(0.7, -0.1), ncol=4)
+    
+    fig.savefig('../reports/figures/evaluation.jpg', dpi=300, bbox_inches='tight')

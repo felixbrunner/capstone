@@ -38,3 +38,20 @@ def load_raw():
     df = df.sort_values('date')
     
     return df
+
+def load_heroku_csv(columns, dtypes):
+    '''Loads the data from Heroku PostgresSQL database
+    downloaded csv file in appropriate foramtting.
+    '''
+    # load
+    df_heroku = pd.read_csv('../data/heroku_data.csv')
+    df = pd.DataFrame.from_dict([eval(string) for string in df_heroku.request])\
+            .set_index('observation_id')
+    df.columns = columns
+    df = df.astype(dtypes)
+    
+    # add new columns
+    df['predicted_outcome'] = df_heroku['predicted_outcome'].astype('boolean').values
+    df['success'] = df_heroku['true_outcome'].astype('boolean').values
+    
+    return df

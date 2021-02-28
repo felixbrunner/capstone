@@ -2,6 +2,9 @@
 data/
 data/train.csv
 
+# submission
+code_submission/
+
 # Deployment
 deploy/
 

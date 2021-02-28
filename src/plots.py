@@ -55,7 +55,6 @@ def make_countplot(df):
     
     fig.savefig('../reports/figures/timeseriesplot.jpg', dpi=300, bbox_inches='tight')
     
-    
 def make_geoplot(df):
     '''Plots the geographical locations of searches.'''
     # prepare data
@@ -85,7 +84,6 @@ def make_geoplot(df):
     # finalise
     ax.legend(loc='upper right')
     fig.savefig('../reports/figures/geoplot.jpg', dpi=300, bbox_inches='tight')
-    
     
 def make_confusion_heatmap(df):
     '''Creates a confusion matrix with self-defined ethnicity vs officer-ascribed ethnicity.'''
@@ -130,7 +128,6 @@ def make_confusion_heatmap(df):
     
     fig.savefig('../reports/figures/heatmap.jpg', dpi=300, bbox_inches='tight')
     
-    
 def make_barplot(df, group_var, outcome_var):
     ''''''
     # prepare data
@@ -154,7 +151,6 @@ def make_barplot(df, group_var, outcome_var):
     ax.set_yticklabels(data.index)
     ax.set_ylabel(group_var)
     
-
 def make_barplot_success(df, group_vars):
     ''''''
     # plot parameters
@@ -210,7 +206,6 @@ def make_barplot_success(df, group_vars):
         
         fig.savefig('../reports/figures/success_rates.jpg', dpi=300, bbox_inches='tight')
         
-        
 def make_evaluation_plot(df=None):
     '''Creates a summarising plot of model perfomances.'''
     # set up
@@ -218,45 +213,94 @@ def make_evaluation_plot(df=None):
         df_plain_models = df
     else:
         df_plain_models = pd.read_pickle('../data/df_plain_models.pickle')
+    labels = df_plain_models.index.to_list()
+    x = np.arange(len(labels)-1)
     fig, axes = plt.subplots(4, 1, figsize=(17,10))
     
     # precision
     ax = axes[0]
     ax.set_xticklabels([])
     ax.set_title('Search precision')
-    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'precision')], marker='o', markersize=10, label='Training')
-    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'precision')], marker='o', markersize=10, label='Validation')
+    ax.bar(x=x-0.1, height=df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'precision')], label='Training', width=0.2)
+    ax.bar(x=x+0.1, height=df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'precision')], label='Validation', width=0.2)
     ax.axhline(df_plain_models.loc['Benchmark', ('all', 'precision')], c='k', linewidth=2, linestyle='--', label='Benchmark')
+    ax.axhline(0, c='k', linewidth=4, linestyle='-')
     ax.set_ylim([0, 1])
     
     # within station
     ax = axes[1]
     ax.set_xticklabels([])
     ax.set_title('Maximum discrimination within station between ethnicity-gender-subgroups')
-    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'within_station')], marker='o', markersize=10, label='Training')
-    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'within_station')], marker='o', markersize=10, label='Validation')
+    ax.bar(x=x-0.1, height=df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'within_station')], label='Training', width=0.2)
+    ax.bar(x=x+0.1, height=df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'within_station')], label='Validation', width=0.2)
     ax.axhline(df_plain_models.loc['Benchmark', ('all', 'within_station')], c='k', linewidth=2, linestyle='--', label='Benchmark')
     ax.axhline(0.05, c='k', linewidth=2, linestyle=':', label='Target')
+    ax.axhline(0, c='k', linewidth=4, linestyle='-')
     ax.set_ylim([0, None])
     
     # across station
     ax = axes[2]
     ax.set_xticklabels([])
     ax.set_title('Maximum precision discrepancy between stations overall')
-    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'across_station')], marker='o', markersize=10, label='Training')
-    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'across_station')], marker='o', markersize=10, label='Validation')
+    ax.bar(x=x-0.1, height=df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'across_station')], label='Training', width=0.2)
+    ax.bar(x=x+0.1, height=df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'across_station')], label='Validation', width=0.2)
     ax.axhline(df_plain_models.loc['Benchmark', ('all', 'across_station')], c='k', linewidth=2, linestyle='--', label='Benchmark')
     ax.axhline(0.1, c='k', linewidth=2, linestyle=':', label='Target')
+    ax.axhline(0, c='k', linewidth=4, linestyle='-')
     ax.set_ylim([0, None])
     
     # across subgroups
     ax = axes[3]
     ax.set_title('Maximum discrimination between ethnicity-gender-subgroups')
-    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'across_group')], marker='o', markersize=10, label='Training')
-    ax.plot(df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'across_group')], marker='o', markersize=10, label='Validation')
+    ax.bar(x=x-0.1, height=df_plain_models.loc[df_plain_models.index!='Benchmark', ('train', 'across_group')], label='Training', width=0.2)
+    ax.bar(x=x+0.1, height=df_plain_models.loc[df_plain_models.index!='Benchmark', ('val', 'across_group')], label='Validation', width=0.2)
     ax.axhline(df_plain_models.loc['Benchmark', ('all', 'across_group')], c='k', linewidth=2, linestyle='--', label='Benchmark')
     ax.axhline(0.05, c='k', linewidth=2, linestyle=':', label='Target')
+    ax.axhline(0, c='k', linewidth=4, linestyle='-')
+    ax.set_xticklabels(labels)
     ax.set_ylim([0, None])
     ax.legend(loc='upper right', bbox_to_anchor=(0.7, -0.1), ncol=4)
     
     fig.savefig('../reports/figures/evaluation.jpg', dpi=300, bbox_inches='tight')
+    
+def make_station_barplot(df):
+    '''Creates a stacked barplot to show station observation counts.'''
+    fig, ax = plt.subplots(1, 1, figsize=(15,4))
+    
+    df[df.index != 'metropolitan'].plot.bar(stacked=True, ax=ax)
+    ax.set_title('Observation count per station and dataset')
+    
+    fig.savefig('../reports/figures/station_obs.jpg', dpi=300, bbox_inches='tight')
+    
+def make_distribution_plots(X_0, X_1, X_2, X_3):
+    '''Creates grouped barplots to compare discrete dataset distributions.'''
+    fig, axes = plt.subplots(7, 1, figsize=(5, 30))
+
+    columns = ['type', 'operation', 'sex', 'age', 'ethnicity_officer', 'legislation', 'search_target']
+    titles = ['Type', 'Part of policing operation', 'Gender', 'Age group', 'Officer-defined ethnicity', 'Legislation', 'Object of search']
+
+    for col, title, ax in zip(columns, titles, axes):
+        counts = (X_0[col].value_counts()/len(X_0))\
+                    .rename('Training data')\
+                    .to_frame()\
+                    .join((X_1[col].value_counts()/len(X_1)).rename('Test set 1'))\
+                    .join((X_2[col].value_counts()/len(X_2)).rename('Test set 2'))\
+                    .join((X_3[col].value_counts()/len(X_3)).rename('Training data (same stations)'))
+        counts.index = counts.index.add_categories(['NA'])
+        counts.loc['NA',:] = [X[col].isna().sum()/len(X) for X in [X_0, X_1, X_2, X_3]]
+    
+        counts.plot.bar(ax=ax, legend=False)
+        ax.set_xlabel(title)
+        if col == 'type':
+            ax.set_xticklabels(['Person', 'Person & Vehicle', 'Vehicle', 'NA'], rotation=0)
+        elif col in ['legislation', 'search_target']:
+            ax.set_xticklabels([label[0:3]+'.' for label in counts.index], rotation=90)
+        else:
+            ax.set_xticklabels(counts.index, rotation=0)
+        
+        if col == 'search_target':
+            ax.legend(bbox_to_anchor=(0.5, -0.6), ncol=3, loc='lower center')
+        
+        plt.subplots_adjust(hspace = 0.4)
+    
+    fig.savefig('../reports/figures/distribution_comparison.jpg', dpi=300, bbox_inches='tight')
